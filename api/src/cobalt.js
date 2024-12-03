@@ -1,12 +1,9 @@
-import "dotenv/config";
-
 import express from "express";
 import cluster from "node:cluster";
-
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { env, isCluster } from "./config.js"
+import { env, isCluster } from "./config.js";
 import { Red } from "./misc/console-text.js";
 import { initCluster } from "./misc/cluster.js";
 
@@ -18,15 +15,18 @@ const __dirname = path.dirname(__filename).slice(0, -4);
 app.disable("x-powered-by");
 
 if (env.apiURL) {
-    const { runAPI } = await import("./core/api.js");
+  const { runAPI } = await import("./core/api.js");
 
-    if (isCluster) {
-       await initCluster();
-    }
+  if (isCluster) {
+    await initCluster();
+  }
 
-    runAPI(express, app, __dirname, cluster.isPrimary);
+  runAPI(express, app, __dirname, cluster.isPrimary);
 } else {
-    console.log(
-        Red("API_URL env variable is missing, cobalt api can't start.")
-    )
+  console.log(
+    Red("API_URL env variable is missing, cobalt API can't start.")
+  );
 }
+
+// 导出 Express 应用
+module.exports = app;
